@@ -3,13 +3,13 @@ gem 'echoe'
 require 'echoe'
 
 Echoe.new('tem_openssl') do |p|
-  p.project = 'smartcard' # rubyforge project
+  p.project = 'tem' # rubyforge project
   
   p.author = 'Victor Costan'
   p.email = 'victor@costan.us'
   p.summary = 'TEM (Trusted Execution Module) engine for OpenSSL.'
-  p.url = 'http://www.costan.us/smartcard'
-  p.dependencies = ['tem_ruby >=0.2.0']
+  p.url = 'http://tem.rubyforge.org'
+  p.dependencies = ['tem_ruby >=0.9.0']
   
   p.need_tar_gz = false
   p.rdoc_pattern = /^(lib|bin|tasks|ext)|^BUILD|^README|^CHANGELOG|^TODO|^LICENSE|^COPYING$/  

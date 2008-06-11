@@ -1,0 +1,11 @@
+v0.3.2. Updated to the API of tem_ruby 0.7.1 (Tem#pubek instead of an ugly hack).
+
+v0.3.1. Updated to the API of tem_ruby 0.7.0.
+
+v0.3. Implemented rsautl -sign and -verify to meet the openssl specs.
+
+v0.2.1. Implemented public key exporting to PEM files. Requires public keys instead of the full key when possible. The TEM should not be needed when only public keys are required. 
+
+v0.2. Implemented signing.
+
+v0.1. Initial release.
