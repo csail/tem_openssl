@@ -1,0 +1,10 @@
+bin/openssl_tem
+CHANGELOG
+lib/ossl/executor.rb
+lib/ossl/key.rb
+lib/ossl/tem_tools.rb
+lib/tem_openssl.rb
+LICENSE
+README
+test/test_executor.rb
+Manifest

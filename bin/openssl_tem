@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'tem_openssl'
+
+Tem::OpenSSL::Executor.run(ARGV)

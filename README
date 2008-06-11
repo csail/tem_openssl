@@ -1,0 +1,35 @@
+This is a tool for the TEM-based OpenSSL engine.
+
+Running coverage tests:
+gem install rcov
+rcov -Ilib test/*.rb
+
+Implemented commands (the format is supposed to be compatible with the "openssl" tool):
+
+openssl_tem reset
+Resets the TEM to a working state. The TEM applet is reinitialized, and the TEM is emitted.
+All key material and state on TEM is lost.
+
+openssl_tem rsagen 2048 -out key.temkey
+Generates a RSA key pair on the TEM (the size is ignored), outputs the TEM-bound key pair to
+"key.temkey".
+
+openssl_tem rsa -in key.temkey -out key.pem -pubout
+Extracts the public key from a TEM-bound key pair, outputs it in PEM format to "key.pem"
+
+openssl_tem rsautl -encrypt -in plain.txt -inkey key.pem -out crypted.txt -pkcs
+Encrypts the data in "plain.txt" using the PEM public key (or public key in a TEM-bound key pair)
+in "key.pem". PKCS#1 padding is always used.
+
+openssl_tem rsautl -decrypt -in crypted.txt -inkey key.temkey -out plain2.txt -pkcs
+Decrypts the data in "crypted.txt" using TEM-bound key pair in "key.temkey".
+PKCS#1 padding is always used.
+
+openssl_tem rsautl -xsign -in plain.txt -inkey key.temkey -out signature.txt -pkcs
+Signs the data in "plain.txt" using the TEM-bound key pair in "key.temkey".
+PKCS#1 padding over a SHA-1 message digest of the data is always used.
+
+openssl_tem rsautl -xverify -in signature.txt -inkey key.pem -indata plain.txt -out verif.txt -pkcs
+Verifies that "signature.txt" was produced by signing the data in "plain.txt" using the
+TEM-bound key with the PEM public key in "key.pem". PKCS#1 padding over a SHA-1 of the data is
+always used. The output is "true" or "false".
