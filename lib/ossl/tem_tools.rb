@@ -45,7 +45,7 @@ module Tem::OpenSSL::TemTools
       s.stack
       s.extra 8
     end
-    crypt_sec.seal(tem.pubek, :key_data, :input_length)
+    crypt_sec.bind(tem.pubek, :key_data, :input_length)
     return crypt_sec
   end
   
@@ -83,7 +83,7 @@ module Tem::OpenSSL::TemTools
       s.stack
       s.extra 8
     end
-    sign_sec.seal(tem.pubek, :key_data, :input_length)
+    sign_sec.bind(tem.pubek, :key_data, :input_length)
     return sign_sec
   end
   
