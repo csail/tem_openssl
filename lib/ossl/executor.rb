@@ -93,20 +93,9 @@ class Tem::OpenSSL::Executor
   end
   
   def connect_to_tem
-    @terminal = Tem::SCard::JCOPRemoteTerminal.new
-    if !@terminal.connect or @test_options[:no_tem]
-      @terminal.disconnect
-      @terminal = Tem::SCard::PCSCTerminal.new
-      if !@terminal.connect or @test_options[:no_tem]
-        @terminal.disconnect
-        @terminal = nil
-      end
-    end
-    unless @terminal.nil?
-      @javacard = Tem::SCard::JavaCard.new(@terminal)
-      @tem = Tem::Session.new(@javacard)
-    
-      @cleanup_procs << Proc.new { @tem.disconnect; @terminal.disconnect }
+    @tem = Tem.auto_tem
+    if @tem    
+      @cleanup_procs << Proc.new { @tem.disconnect; }
     end
   end
   
