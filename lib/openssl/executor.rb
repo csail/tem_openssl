@@ -1,6 +1,7 @@
-require 'pp'
-
-class Tem::OpenSSL::Executor
+# :nodoc: namespace
+module Tem::OpenSSL
+  
+class Executor
   def initialize(args, test_options)
     @args = args
     # unknown args get thrown here
@@ -105,3 +106,5 @@ class Tem::OpenSSL::Executor
     ex.cleanup
   end
 end
+
+end  # namespace Tem::OpenSSL

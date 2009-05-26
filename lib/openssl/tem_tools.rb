@@ -1,18 +1,23 @@
-module Tem::OpenSSL::TemTools
-  # generate an RSA key pair on the TEM
-  # slower than OpenSSL-based generation, but uses a hardware RNG
+# :nodoc: namespace
+module Tem::OpenSSL
+  
+module TemTools
+  # Generate an RSA key pair on the TEM.
+  #
+  # Runs slower than OpenSSL-based generation, but uses a hardware RNG.
   def self.generate_key_on_tem(tem)
-    kdata = tem.tk_gen_key(:asymmetric)
-    pubk = tem.tk_read_key(kdata[:pubk_id], kdata[:authz])
-    tem.tk_delete_key(kdata[:pubk_id], kdata[:authz])
-    privk = tem.tk_read_key(kdata[:privk_id], kdata[:authz])
-    tem.tk_delete_key(kdata[:privk_id], kdata[:authz])
+    kdata = tem.tk_gen_key :asymmetric
+    pubk = tem.tk_read_key kdata[:pubk_id], kdata[:authz]
+    tem.tk_delete_key kdata[:pubk_id], kdata[:authz]
+    privk = tem.tk_read_key kdata[:privk_id], kdata[:authz]
+    tem.tk_delete_key kdata[:privk_id], kdata[:authz]
     
     return {:privk => privk, :pubk => pubk}
   end
   
-  # generates a SECpack that encrypts/decrypts a user-supplied blob
-  # the SECpack is tied down to a TEM
+  # Generates a SECpack that encrypts/decrypts a user-supplied blob.
+  #
+  # The SECpack is tied down to a TEM.
   def self.crypting_sec(key, tem, mode = :decrypt)
     crypt_sec = tem.assemble do |s|
       # load the key in the TEM
@@ -45,12 +50,13 @@ module Tem::OpenSSL::TemTools
       s.stack
       s.extra 8
     end
-    crypt_sec.bind(tem.pubek, :key_data, :input_length)
-    return crypt_sec
+    crypt_sec.bind tem.pubek, :key_data, :input_length
+    crypt_sec
   end
   
-  # generates a SECpack that decrypts a user-supplied blob
-  # the SECpack is tied down to a TEM
+  # Generates a SECpack that decrypts a user-supplied blob.
+  #
+  # The SECpack is tied down to a TEM.
   def self.signing_sec(key, tem)
     sign_sec = tem.assemble do |s|
       # load the key in the TEM
@@ -83,42 +89,45 @@ module Tem::OpenSSL::TemTools
       s.stack
       s.extra 8
     end
-    sign_sec.bind(tem.pubek, :key_data, :input_length)
-    return sign_sec
+    sign_sec.bind tem.pubek, :key_data, :input_length
+    sign_sec
   end
   
   
-  # encrypts/decrypts using a SECpack generated via a previous call to crypting_sec
+  # Encrypts/decrypts using a SECpack generated via a previous call to
+  # crypting_sec.
   def self.crypt_with_sec(encrypted_data, dec_sec, tem)
     # convert the data string to an array of numbers
-    ed = encrypted_data.unpack('C*')
+    ed = encrypted_data.unpack 'C*'
     
     # patch the data and its length into the SEC 
-    elen = tem.to_tem_ushort(ed.length)
+    elen = tem.to_tem_ushort ed.length
     dec_sec.body[dec_sec.label_address(:input_length), elen.length] = elen
     dec_sec.body[dec_sec.label_address(:input_data), ed.length] = ed
     
     # run the sec and convert its output to a string
     dd = tem.execute dec_sec
-    decrypted_data = dd.pack('C*')
+    decrypted_data = dd.pack 'C*'
     
     return decrypted_data
   end
   
-  # signs using a SECpack generated via a previous call to signing_sec
+  # Signs using a SECpack generated via a previous call to signing_sec.
   def self.sign_with_sec(data, sign_sec, tem)
     # convert the data string to an array of numbers
-    d = data.unpack('C*')
+    d = data.unpack 'C*'
     
     # patch the data and its length into the SEC 
-    len = tem.to_tem_ushort(d.length)
+    len = tem.to_tem_ushort d.length
     sign_sec.body[sign_sec.label_address(:input_length), len.length] = len
     sign_sec.body[sign_sec.label_address(:input_data), d.length] = d
     
     # run the sec and convert its output to a string
     s = tem.execute sign_sec
-    signature = s.pack('C*')
+    signature = s.pack 'C*'
     
     return signature
   end  
 end
+
+end  # namespace Tem::OpenSSL
