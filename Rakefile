@@ -9,9 +9,10 @@ Echoe.new('tem_openssl') do |p|
   p.email = 'victor@costan.us'
   p.summary = 'TEM (Trusted Execution Module) engine for OpenSSL.'
   p.url = 'http://tem.rubyforge.org'
-  p.dependencies = ['tem_ruby >=0.9.0']
+  p.dependencies = ['tem_ruby >=0.10.2']
   
-  p.need_tar_gz = false
+  p.need_tar_gz = !Platform.windows?
+  p.need_zip = !Platform.windows?
   p.rdoc_pattern = /^(lib|bin|tasks|ext)|^BUILD|^README|^CHANGELOG|^TODO|^LICENSE|^COPYING$/  
 end
 

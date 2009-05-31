@@ -35,20 +35,18 @@ module TemTools
       
       # key material
       s.label :key_data
-      s.immed :ubyte, key.to_tem_key
+      s.data :tem_ubyte, key.to_tem_key
       
       # user-supplied argument: the length of the blob to be encrypted/decrypted
       s.label :input_length
-      s.immed :ushort, 256
+      s.data :tem_ushort, 256
       
       # user-supplied argument: the blob to be encrypted/decrypted
       s.label :input_data
-      s.filler :ubyte, 512
+      s.zeros :tem_ubyte, 512
       
-      # the TEM stack
       s.label :sec_stack
-      s.stack
-      s.extra 8
+      s.stack 4
     end
     crypt_sec.bind tem.pubek, :key_data, :input_length
     crypt_sec
@@ -74,20 +72,18 @@ module TemTools
       
       # key material
       s.label :key_data
-      s.immed :ubyte, key.to_tem_key
+      s.data :tem_ubyte, key.to_tem_key
       
       # user-supplied argument: the length of the blob to be signed
       s.label :input_length
-      s.immed :ushort, 256
+      s.data :tem_ushort, 256
       
       # user-supplied argument: the blob to be signed
       s.label :input_data
-      s.filler :ubyte, 512
+      s.zeros :tem_ubyte, 512
       
-      # the TEM stack
       s.label :sec_stack
-      s.stack
-      s.extra 8
+      s.stack 4
     end
     sign_sec.bind tem.pubek, :key_data, :input_length
     sign_sec
